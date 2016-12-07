@@ -1,0 +1,199 @@
+<!DOCTYPE html> <!-- -->
+<html xmlns="http://www.w3.org/1999/xhtml">    
+<head>
+	<title>howler.demo</title>
+    <!--This program use a specific library called howlwer.js-->
+    <script type="text/javascript" src="/sample/library/howler.js"></script>
+    <!--script type="text/javascript" src="/sample/library/howler.min.js"></script-->	
+</head>
+ <body>        
+<!-- this table contains all the images ; Each image trig its specific sound -->
+		<table border = "1" class="soundboard">
+		    <tr>
+		        <td><img id="chat" data-sound="chat" src="/sample/imageBorne/chat.png" alt="chat" height="200" width="200" value="cat"></td>
+		        <td><img id="oiseau" data-sound ="oiseau" src="/sample/imageBorne/nichoir_mesange.png" alt="mesange" height="200" width="200" value="mesange"></td>
+	       </tr>
+	    	<tr>
+		        <td><img id="piscine" data-sound ="piscine" src="/sample/imageBorne/piscine.png" alt="piscine" height="200" width="200" value="piscine"></td>
+		        <td><img id="grenouille" data-sound ="grenouille" src="/sample/imageBorne/grenouille.png" alt="grenouille" height="200" width="200" value="grenouille"></td>
+
+		    </tr>
+
+
+		</table>
+
+<!--these buttons allow you to play/stop the background music -->
+	<div>
+		<table>
+			<tr>
+				<td><input type="button" onclick="SoundManager.playsound('Ambiance1')" value="PLAY AMBIANCE OISEAUX">  </td>
+				<td><input type="button" onclick="SoundManager.stopsound('Ambiance1')" value="STOP AMBIANCE OISEAUX">  </td>
+			</tr>
+			<tr>
+				<td><input type="button" onclick="SoundManager.playsound('Ambiance2')" value="PLAY MUSIQUE AMBIANCE"> </td>
+				<td><input type="button" onclick="SoundManager.stopsound('Ambiance2')" value="STOP MUSIQUE AMBIANCE"> </td>
+			</tr>
+		</table>
+	</div>
+</body>
+		
+		<script type="text/javascript">
+		// this object contain an array of sound ; 
+		var SoundManager = {     
+            // sounds is an array of sound; Each sound is descrided by its 2 parameters (name and audio) 
+			sounds: [
+
+////////////////////////////////////////// BACKGROUND MUSIC
+				{
+					// Background music 1 ; it's possible to play/ stop this track
+					name: 'Ambiance1',
+					audio : new Howl({urls: ['/sample/sonBorne/Ambiance1.mp3'],
+		  			autoplay: false,
+		  			loop: true,
+		  			volume: 0.5 })
+				},
+////////////////////////////////////// BACKGROUND MUSIC 
+				{
+					// Background music 2 ; it's possible to play / stop this track 
+					name: 'Ambiance2',
+					audio : new Howl({urls: ['/sample/sonBorne/Musique.mp3'],
+		  			autoplay: false,
+		  			loop: true,
+		  			volume: 0.3 })
+				},
+/////////////////////////////////////// CAT
+				{   
+					// Trig on click ; wait 12 s before an other loop  ----> pic = chat
+					name: 'chat',
+					audio : new Howl({urls: ['/sample/sonBorne/Chat.mp3'],
+						autoplay: false,
+						loop: false,   
+						volume: 0.2, 
+						// 12 sec loop 
+						onend: function() {   
+							setTimeout(function(){ SoundManager.playsound('chat') }, 12000);  				
+							}
+					})
+				},
+
+
+/////////////////////////////////////// oiseau
+				{   
+					// Trig on click ; wait 12 s before an other loop  ----> pic = chat
+					name: 'oiseau',
+					audio : new Howl({urls: ['/sample/sonBorne/Hirondelle.mp3'],
+						autoplay: false,
+						loop: false,   
+						volume: 0.2, 
+						// 12 sec loop 
+						onend: function() {   
+							setTimeout(function(){ SoundManager.playsound('oiseau') }, 12000);  				
+							}
+					})
+				},
+
+
+///////////////////////////////////////////////PISCINE 
+				{
+				   // Trig on click ; wait 15 s before an other loop ---> pic = nichoire à hirondelle; 
+					name: 'piscine',
+					audio : new Howl({urls: ['/sample/sonBorne/Piscine.mp3'],
+						autoplay: false,
+						loop: false,   
+						volume: 0.5, 
+						// 12 sec loop 
+						onend: function() {   
+							setTimeout(function(){ SoundManager.playsound('piscine') }, 15000);  	
+							}
+						})
+				},
+/////////////////////////////////////////////GRENOUILLE 
+				{
+				   // Trig on click ; wait 15 s before an other loop ---> pic = nichoire à hirondelle; 
+					name: 'grenouille',
+					audio : new Howl({urls: ['/sample/sonBorne/Grenouilles.m4a'],
+						autoplay: false,
+						loop: false,   
+						volume: 0.5, 
+						// 12 sec loop 
+						onend: function() {   
+							setTimeout(function(){ SoundManager.playsound('grenouille') }, 15000);  					
+							}
+						})
+				}
+
+///////////////////////////////////////////////////
+			],		
+
+ // this function log hello 
+			init: function () {
+
+				console.log('hello');
+
+			},
+
+// find by name function  ; return a sound object 
+			getSound: function (name) {
+
+				var match = {};
+				for (var i = this.sounds.length - 1; i >= 0; i--) {
+					var sound = this.sounds[i];
+					if (sound.name == name) 
+						match = sound.audio;
+				};
+				return match;
+			},
+
+// this setter allow you to change the volume of a specific sound object 
+			setVolume: function (name, vol){    // cette foncion n'est pas super ---> 
+
+				var lol = {};
+				lol = this.getSound(name);
+				lol.volume = vol ; 
+
+			},
+// test...
+			bipOnClick : function () {
+					 
+					   this.playsound('bip');
+			},
+// stop and play a sound object ; 
+			playsound: function (name) {
+					this.getSound(name).stop(); // before play, it stops the current sound ; 
+					this.getSound(name).play();		
+			},
+	      
+			stopsound: function (name) {
+					this.getSound(name).stop();
+			},
+
+// stop all the sound object ; attention à la portée des variables en javascript 
+			stopAll: function () {
+				for (var i = this.sounds.length - 1; i >= 0; i--) {  
+					var sound = sounds[i];
+					sound.audio.stop();
+				};
+			}
+		}
+
+			window.onload = function () {
+			SoundManager.init(); // 
+
+			var imgs = document.querySelectorAll('img');    // return an array of images 
+			for (var i = imgs.length - 1; i >= 0; i--) {    // for all the elements of the array ; start at the end of the array
+				var img = imgs[i];   
+
+
+				img.onclick = function (event) {    
+
+					var target = event.target;
+					SoundManager.playsound(target.dataset.sound);
+				}
+			}
+
+		};
+
+	</script>
+
+</html>
+
